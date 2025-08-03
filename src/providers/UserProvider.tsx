@@ -1,9 +1,10 @@
 'use client';
 
 import React, { createContext, useContext } from 'react';
+
 import {UserDoc} from '@/lib/interfaces';
 
-export type UserContextType = {
+type UserContextType = {
     uid: string;
     email: string;
     userData: UserDoc;
@@ -11,14 +12,16 @@ export type UserContextType = {
 
 const UserContext = createContext<UserContextType | null>(null);
 
-export function UserProvider({
-                                 user,
-                                 children,
-                             }: {
+export function UserProvider({user, children}: {
     user: UserContextType;
     children: React.ReactNode;
 }) {
-    return <UserContext.Provider value={user}>{children}</UserContext.Provider>;
+    return(
+        <UserContext.Provider
+            value={user}>
+            {children}
+        </UserContext.Provider>
+    );
 }
 
 export function useUser() {

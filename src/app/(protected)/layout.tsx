@@ -6,6 +6,8 @@ import { redirect } from 'next/navigation';
 import { authAdmin, dbAdmin } from '@/lib/firebaseAdminFactory';
 import { UserProvider } from '@/providers/UserProvider';
 import {UserDoc} from '@/lib/interfaces';
+import {DashboardSidebar} from '@/components/DashboardSidebar';
+import {SidebarProvider} from '@/components/ui/sidebar';
 
 export default async function ProtectedLayout({children}: { children: React.ReactNode; }) {
     const session = (await cookies()).get('session')?.value;
@@ -35,7 +37,6 @@ export default async function ProtectedLayout({children}: { children: React.Reac
     }
     
     // Firestore check
-    console.log('WFT UDI: ', uid)
     const snap = await dbAdmin
     .collection('users')
     .doc(uid.toString())
@@ -54,7 +55,12 @@ export default async function ProtectedLayout({children}: { children: React.Reac
                 userData,
             }}
         >
-            {children}
+            <SidebarProvider>
+                <DashboardSidebar/>
+                <div className="w-full">
+                    {children}
+                </div>
+            </SidebarProvider>
         </UserProvider>
     );
 }
