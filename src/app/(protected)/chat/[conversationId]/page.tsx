@@ -1,8 +1,7 @@
-'use server';
-
-import {ai} from '@/lib/ai';
+import {getHistory} from '@/lib/ai';
 import ChatInput from '@/components/ChatInput';
 import {ConversationDoc} from '@/lib/interfaces';
+import {conversationsColName} from '@/lib/config';
 import {dbAdmin} from '@/lib/firebaseAdminFactory';
 import ChatMessages from '@/components/ChatMessages';
 import {ChatMessagesProvider} from '@/providers/ChatMessagesProvider';
@@ -15,10 +14,9 @@ type ConversationPageParams = {
 
 export default async function ConversationPage({ params }: ConversationPageParams) {
     const { conversationId } = await params;
-    const {getHistory} = await ai();
 
     const conversationSnap = await dbAdmin
-        .collection('conversations')
+        .collection(conversationsColName)
         .doc(conversationId).get();
     
     if (!conversationSnap.exists) {
@@ -32,7 +30,7 @@ export default async function ConversationPage({ params }: ConversationPageParam
         <>
             <ChatMessagesProvider initialMessages={history}>
                 <ChatMessages />
-                <ChatInput />
+                <ChatInput threadId={threadId}/>
             </ChatMessagesProvider>
         </>
     );

@@ -5,6 +5,7 @@ import {useRouter} from 'next/navigation';
 
 import {loginWithGoogle} from '@/lib/firebaseApp';
 import Register from '@/components/Register';
+import {apiRoute, authRoute, chatPath, DEFAULT_HEADERS, sessionsRoute} from '@/lib/config';
 
 export default function LoginPage() {
     const router = useRouter();
@@ -16,15 +17,15 @@ export default function LoginPage() {
         const cred = await loginWithGoogle();
         const idToken = await cred.user.getIdToken(true);
         
-        const res = await fetch('/api/auth/session', {
+        const res = await fetch(`/${apiRoute}/${authRoute}/${sessionsRoute}`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: DEFAULT_HEADERS,
             body: JSON.stringify({ idToken }),
         });
         
         if (res.ok) {
             await new Promise(resolve => setTimeout(resolve, 500));
-            router.push('/dashboard');
+            router.push(`/${chatPath}`);
         } else {
             console.error('Failed to create session cookie', await res.text());
         }

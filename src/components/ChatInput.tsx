@@ -2,10 +2,11 @@
 
 import {useEffect, useState} from 'react';
 import {SimpleTextarea} from '@/components/SimpleTextarea';
-import MessageRenderer from '@/components/MessageRenderer';
 import {useChatMessages} from '@/providers/ChatMessagesProvider';
+import {apiRoute, chatRoute, DEFAULT_HEADERS} from '@/lib/config';
+import AIStreamingMessage from '@/components/AIStreamingMessage';
 
-export default function ChatInput() {
+export default function ChatInput({ threadId }: {threadId: string}) {
     const {pushMessage} = useChatMessages();
     const [userInput, setUserInput] = useState('');
     const [chunks, setChunks] = useState<string[]>([]);
@@ -19,10 +20,10 @@ export default function ChatInput() {
         pushMessage({role: 'human', content: userInput});
         setUserInput('');
         
-        const res = await fetch('/api/chat', {
+        const res = await fetch(`/${apiRoute}/${chatRoute}`, {
             method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({threadId: 'test-thread', content: userInput}),
+            headers: DEFAULT_HEADERS,
+            body: JSON.stringify({threadId: threadId, content: userInput}),
         });
         
         if(!res.ok) {
@@ -85,13 +86,8 @@ export default function ChatInput() {
         <div className='mx-auto max-w-[80%] space-y-4'>
             {
                 chunks.length > 0 &&
-                <MessageRenderer message={
-                    {
-                        role: 'ai',
-                        content: chunks
-                            .map(chunk => chunk)
-                            .join('')}
-                } />
+                <AIStreamingMessage chunks={chunks}
+                                    isTyping={sending} />
             }
             
             <SimpleTextarea

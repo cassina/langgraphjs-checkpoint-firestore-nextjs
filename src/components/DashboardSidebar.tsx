@@ -16,9 +16,10 @@ import { MessageSquare } from 'lucide-react';
 import {collection, onSnapshot, query, where} from 'firebase/firestore';
 
 import {db} from '@/lib/firebaseApp';
-import {useUser} from '@/providers/UserProvider';
-import {ConversationDoc, SerializedConversation} from '@/lib/interfaces';
 import {useRouter} from 'next/navigation';
+import {useUser} from '@/providers/UserProvider';
+import {chatPath, conversationsColName} from '@/lib/config';
+import {ConversationDoc, SerializedConversation} from '@/lib/interfaces';
 
 
 // Sidebar component implementation
@@ -28,7 +29,7 @@ export function DashboardSidebar() {
     const [conversations, setConversations] = useState<SerializedConversation[]>([]);
     
     useEffect(() => {
-        const q = query(collection(db, 'conversations'), where('userId', '==', uid));
+        const q = query(collection(db, conversationsColName), where('userId', '==', uid));
         const unsubscribe = onSnapshot(q, (snapshot) => {
             const conversationsList: SerializedConversation[] = snapshot.docs.map((snapshot) => {
                 return {
@@ -40,7 +41,6 @@ export function DashboardSidebar() {
             setConversations([...conversationsList])
         });
         
-        console.log('333')
         return () => unsubscribe();
     }, [uid, setConversations]);
     return (
@@ -53,7 +53,7 @@ export function DashboardSidebar() {
                             {
                                 conversations.map((conv) => (
                                     <SidebarMenuItem key={conv.id}>
-                                        <SidebarMenuButton onClick={() => router.push(`/dashboard/${conv.id}`)}
+                                        <SidebarMenuButton onClick={() => router.push(`/${chatPath}/${conv.id}`)}
                                                            className="flex items-center gap-2">
                                             <MessageSquare className="mr-2 h-4 w-4" aria-hidden="true" />
                                             <span>{conv.title}</span>

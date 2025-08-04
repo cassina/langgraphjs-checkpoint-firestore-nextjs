@@ -19,7 +19,6 @@ export function ChatMessagesProvider({initialMessages = [], children}: {
     
     const pushMessage = (msg: ChatMessage) => {
         setMessages(prev => [...prev, msg]);
-        console.log('psuhed: ', msg);
     };
     
     const setAll = (msgs: ChatMessage[]) => setMessages(msgs);

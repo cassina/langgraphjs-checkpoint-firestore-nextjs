@@ -4,8 +4,9 @@ import {Annotation, START, StateGraph} from '@langchain/langgraph';
 import {FirestoreSaver} from '@cassina/langgraphjs-checkpoint-firestore';
 
 import {dbAdmin} from '@/lib/firebaseAdminFactory';
+import {DEFAULT_MODEL} from '@/lib/config';
 
-const model = new ChatOpenAI({ model: 'gpt-4o-mini' });
+const model = new ChatOpenAI({ model: DEFAULT_MODEL });
 const saver = new FirestoreSaver({ firestore: dbAdmin });
 let _graph: ReturnType<typeof buildGraph> | null = null;
 
@@ -39,7 +40,6 @@ function buildGraph() {
 export type ChatState = typeof ChatStateAnnotation.State;
 
 export function getGraph() {
-    console.log('getGraph');
     if (_graph) return _graph;
     _graph = buildGraph();
     return _graph;

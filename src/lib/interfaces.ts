@@ -3,7 +3,7 @@ import {StreamMode} from '@langchain/langgraph';
 
 export interface UserDoc {
     email: string;
-    creationTime?: string; // ISO timestamp from Firebase Auth
+    creationTime?: string;
     emailVerified?: boolean;
     displayName?: string | null;
     photoURL?: string | null;

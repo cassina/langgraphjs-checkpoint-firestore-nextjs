@@ -32,6 +32,7 @@ export function SimpleTextarea({
     return (
         <div className="relative w-full flex gap-4">
             <Textarea
+                id="chat-input"
                 ref={textareaRef}
                 className={className ?? 'w-full min-h-[24px] max-h-[400px] resize-none'}
                 placeholder='Send a message…'

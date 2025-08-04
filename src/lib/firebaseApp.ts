@@ -1,8 +1,8 @@
 'use client';
 
 import { initializeApp } from 'firebase/app';
-import {connectAuthEmulator, getAuth, GoogleAuthProvider, signInWithPopup} from 'firebase/auth';
 import {connectFirestoreEmulator, getFirestore} from 'firebase/firestore';
+import {connectAuthEmulator, getAuth, GoogleAuthProvider, signInWithPopup} from 'firebase/auth';
 
 // Your web app's Firebase configuration
 export const firebaseConfig = {
@@ -28,8 +28,13 @@ export const loginWithGoogle = () => {
 
 const isDev = process.env.NODE_ENV === 'development';
 if (isDev) {
-    connectAuthEmulator(auth, process.env.NEXT_PUBLIC_FIREBASE_AUTH_EMULATOR_HOST);
-    const [firestoreHost, firestorePort] = process.env.NEXT_PUBLIC_FIRESTORE_EMULATOR_HOST.split(':');
+    const authEmulatorURL = process.env.NEXT_PUBLIC_FIREBASE_AUTH_EMULATOR_HOST;
+    const firestoreEmulatorURL = process.env.NEXT_PUBLIC_FIRESTORE_EMULATOR_HOST;
+    
+    if (!authEmulatorURL || !firestoreEmulatorURL) {throw new Error(`No host!: auth: ${authEmulatorURL}, firestore: ${firestoreEmulatorURL}`)}
+    
+    const [firestoreHost, firestorePort] = firestoreEmulatorURL.split(':');
+    connectAuthEmulator(auth, authEmulatorURL);
     connectFirestoreEmulator(db, firestoreHost, Number(firestorePort));
 }
 

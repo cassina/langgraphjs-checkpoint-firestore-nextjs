@@ -8,6 +8,7 @@ import { UserProvider } from '@/providers/UserProvider';
 import {UserDoc} from '@/lib/interfaces';
 import {DashboardSidebar} from '@/components/DashboardSidebar';
 import {SidebarProvider} from '@/components/ui/sidebar';
+import {loginPath, pendingPath, usersColName} from '@/lib/config';
 
 export default async function ProtectedLayout({children}: { children: React.ReactNode; }) {
     const session = (await cookies()).get('session')?.value;
@@ -25,7 +26,7 @@ export default async function ProtectedLayout({children}: { children: React.Reac
         email = decoded.email ?? null;
     } catch (err) {
         console.error('Failed to verify session cookie:', err);
-        redirect('/login');
+        redirect(`/${loginPath}`);
     }
     
     if (!email) {
@@ -33,17 +34,17 @@ export default async function ProtectedLayout({children}: { children: React.Reac
     }
     
     if (!uid) {
-        redirect('/login');
+        redirect(`/${loginPath}`);
     }
     
     // Firestore check
     const snap = await dbAdmin
-    .collection('users')
+    .collection(usersColName)
     .doc(uid.toString())
     .get();
     
     if (!snap.exists) {
-        redirect('/pending');
+        redirect(`/${pendingPath}`);
     }
     const userData = snap.data() as UserDoc;
     

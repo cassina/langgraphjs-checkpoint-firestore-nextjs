@@ -1,4 +1,3 @@
-// app/hooks/use-scroll-to-bottom.ts
 'use client';
 
 import {DependencyList, useEffect, useRef} from 'react';
@@ -18,7 +17,7 @@ export function useScrollToBottom<T extends HTMLElement>(
     const bottomRef = useRef<T | null>(null);
     
     useEffect(() => {
-        bottomRef.current?.scrollIntoView({behavior: 'smooth'});
+        bottomRef.current?.scrollIntoView({behavior: 'instant'});
     }, deps); // eslint-disable-line react-hooks/exhaustive-deps
     
     return bottomRef;
