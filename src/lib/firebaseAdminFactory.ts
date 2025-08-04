@@ -14,8 +14,23 @@ if (isDev) {
         throw new Error('No host!')
     }
 }
+
+export const getGCPCredentials = () => {
+    // for Vercel, use environment variables
+    return process.env.GCP_PRIVATE_KEY
+        ? {
+            credentials: {
+                client_email: process.env.GCP_SERVICE_ACCOUNT_EMAIL,
+                private_key: process.env.GCP_PRIVATE_KEY,
+            },
+            projectId: process.env.GCP_PROJECT_ID,
+        }
+        : { projectId: process.env.GCLOUD_PROJECT };
+};
+
+
 const apps = getApps();
-const app = apps.length === 0 ? admin.initializeApp({ projectId: process.env.GCLOUD_PROJECT }) : apps[0];
+const app = apps.length === 0 ? admin.initializeApp(getGCPCredentials()) : apps[0];
 
 export const authAdmin = getAuth(app);
 export const dbAdmin = getFirestore(app);
